@@ -21,11 +21,12 @@ workflows:
     scripts:
       - name: Install npm dependencies
         script: |
-          npm install
+          npm ci
       - name: Sync Capacitor iOS
         script: |
-          npx cap copy ios
-          npx cap update ios
+          test -f ios/App/App.xcodeproj/project.pbxproj
+          test -f ios/App/CapApp-SPM/Package.swift
+          npx cap sync ios
       - name: Set up code signing (automatic, via App Store Connect API key)
         script: |
           xcode-project use-profiles
