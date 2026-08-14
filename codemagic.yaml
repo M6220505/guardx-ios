@@ -4,7 +4,7 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: guardx_asc_key
+      app_store_connect: guardx_asc_key   # set this name when you add your API key in Codemagic (Step 3 below)
     environment:
       vars:
         BUNDLE_ID: "com.sevenguardx.app"
@@ -24,7 +24,8 @@ workflows:
           npm install
       - name: Sync Capacitor iOS
         script: |
-          npx cap sync ios
+          npx cap copy ios
+          npx cap update ios
       - name: Set up code signing (automatic, via App Store Connect API key)
         script: |
           xcode-project use-profiles
@@ -44,4 +45,6 @@ workflows:
       app_store_connect:
         auth: integration
         submit_to_testflight: true
+        # Flip this to true once you're ready to submit for full App Store review
+        # (after testing via TestFlight first is strongly recommended):
         submit_to_app_store: false
