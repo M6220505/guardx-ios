@@ -6,6 +6,9 @@ workflows:
     integrations:
       app_store_connect: guardx_asc_key   # set this name when you add your API key in Codemagic (Step 3 below)
     environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: "com.sevenguardx.app"
       vars:
         BUNDLE_ID: "com.sevenguardx.app"
         XCODE_PROJECT: "ios/App/App.xcodeproj"
