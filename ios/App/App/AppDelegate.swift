@@ -1,48 +1,5 @@
 import UIKit
 import Capacitor
-import WebKit
-
-/// GuardX intentionally uses first-party email/password authentication in the
-/// iOS app. The website also exposes Google OAuth, but that browser-based flow
-/// is not supported inside the native WebView. Hiding it here prevents users
-/// and App Review from entering a sign-in path that cannot complete on iOS.
-class GuardXBridgeViewController: CAPBridgeViewController {
-    override func webViewConfiguration(for instanceConfiguration: InstanceConfiguration) -> WKWebViewConfiguration {
-        let configuration = super.webViewConfiguration(for: instanceConfiguration)
-
-        let hideUnsupportedGoogleLogin = WKUserScript(
-            source: """
-            (() => {
-              const hideGoogleLogin = root => {
-                root.querySelectorAll?.('.wk-google-wrap').forEach(element => {
-                  element.setAttribute('hidden', '');
-                  element.setAttribute('aria-hidden', 'true');
-                  element.style.setProperty('display', 'none', 'important');
-                });
-              };
-
-              hideGoogleLogin(document);
-
-              const originalAttachShadow = Element.prototype.attachShadow;
-              Element.prototype.attachShadow = function(init) {
-                const root = originalAttachShadow.call(this, init);
-                const observer = new MutationObserver(() => hideGoogleLogin(root));
-                observer.observe(root, { childList: true, subtree: true });
-                queueMicrotask(() => hideGoogleLogin(root));
-                return root;
-              };
-
-              const documentObserver = new MutationObserver(() => hideGoogleLogin(document));
-              documentObserver.observe(document.documentElement, { childList: true, subtree: true });
-            })();
-            """,
-            injectionTime: .atDocumentStart,
-            forMainFrameOnly: true
-        )
-        configuration.userContentController.addUserScript(hideUnsupportedGoogleLogin)
-        return configuration
-    }
-}
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
